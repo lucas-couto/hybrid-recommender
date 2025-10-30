@@ -1,0 +1,69 @@
+experiment:
+  # Caminho para o diretório de resultados
+  path_output_rec_result: "results/"
+
+  # Opções de inicialização
+  log_level: DEBUG
+  gpu: 0 # Usar a GPU 0 (se disponível)
+
+data_config:
+  # Definição do dataset
+  strategy: fixed
+
+  # Caminho para o arquivo de interações (usuário, item, rating)
+  dataset_path: "dataset/interactions.tsv"
+
+  # Mapeamento das colunas
+  side_information:
+    visual_feature:
+      # Nome da Side Information que será referenciada nos modelos
+      name: "visual_features"
+      # Caminho para o arquivo NPY com os embeddings visuais
+      path: "dataset/visual_features.npy"
+
+  # Divisão dos dados (exemplo: 80% treino, 20% teste)
+  splitter:
+    name: "fixed"
+    test_separators: [0.2]
+
+# Configuração dos Algoritmos de Recomendação
+recommenders:
+  # --- 1. VBPR: Visual Bayesian Personalized Ranking ---
+  VBPR:
+    # O Elliot referencia o VBPR pelo nome da classe
+    meta:
+      hyper_max_evals: 1 # Número de tentativas de hyper-tuning
+
+    # Parâmetros específicos para o modelo VBPR
+    lr: 0.001
+    epochs: 50
+    factors: 64 # Dimensão dos fatores latentes
+    batch_size: 1024
+    l_w: 0.001 # Regularização
+    l_b: 0.001
+
+    # Mapeia qual Side Information Visual ele deve usar
+    visual_feature: "visual_features"
+
+  # --- 3. VNPR: Visual Neural Personalized Ranking ---
+  VNPR:
+    meta:
+      hyper_max_evals: 1
+
+    # Parâmetros (geralmente semelhantes ao VBPR/BPR)
+    lr: 0.001
+    epochs: 50
+    factors: 64
+    batch_size: 1024
+    l_w: 0.001
+
+    # Mapeia qual Side Information Visual ele deve usar
+    visual_feature: "visual_features"
+
+# Configuração de Métricas de Avaliação (Para Top-N)
+evaluation:
+  cutoffs: [10]
+  simple_metrics:
+    - R_precision
+    - NDCG
+    - Recall
