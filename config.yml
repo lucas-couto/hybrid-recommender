@@ -1,6 +1,7 @@
 model:
   input_shape: [128, 128, 3]
-  num_classes: 1
+  embedding_dim: 256
+  hybrid_models: ["Restnet50", "ViT"]
 
 patient:
   early_stop: 8
