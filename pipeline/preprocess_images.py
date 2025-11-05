@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore', category=UserWarning, module='PIL')
 
 def preprocess_images(
     src_dir: str = "images",
-    output_file: str = "outputs/images.npz",
+    output_file: str = "outputs/items.npz",
     size: Tuple[int, int] = (128, 128),
     extensions: Tuple[str, ...] = (".jpg", ".jpeg", ".png", ".webp", ".bmp"),
 ) -> None:
@@ -30,7 +30,7 @@ def preprocess_images(
     # Buffers
     imgs: List[np.ndarray] = []
     # Agora armazenará apenas a parte do ID (sem extensão)
-    image_ids: List[str] = [] 
+    items_id: List[str] = [] 
 
     total_processed = 0
     skipped_count = 0
@@ -64,7 +64,7 @@ def preprocess_images(
                 # 3. Adicionar aos buffers
                 imgs.append(arr)
                 # SALVA APENAS O ID EXTRAÍDO
-                image_ids.append(image_id) 
+                items_id.append(image_id) 
                 total_processed += 1
                 
                 # Feedback de progresso
@@ -85,13 +85,13 @@ def preprocess_images(
     # 4. Empilhar e Salvar no NPZ
     print("\nEmpilhando arrays...")
     images_array = np.stack(imgs, axis=0)
-    ids_array = np.array(image_ids, dtype=object) # IDs como array de strings/object
+    ids_array = np.array(items_id, dtype=object) # IDs como array de strings/object
 
     # Salvamento
     np.savez_compressed(
         dst_path,
         images=images_array,
-        image_ids=ids_array
+        items_id=ids_array
     )
 
     print("\n✅ Concluído.")

@@ -3,7 +3,7 @@ import tensorflow as tf
 import gc
 
 def get_embeddings_models(config, data):
-  models = [Resnet50, ViT]
+  models = [Resnet50]
   embeddings = {}
 
   for model in models:
